@@ -215,7 +215,7 @@ export default function GuidePage() {
                     {pillar.description}
                   </p>
                   <div className="mt-3 flex items-start gap-2 rounded-md bg-muted/60 px-3 py-2">
-                    <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+                    <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
                     <p className="text-xs text-muted-foreground italic">
                       {pillar.tip}
                     </p>
@@ -267,10 +267,10 @@ export default function GuidePage() {
       {/* Key Insight Callout */}
       <section className="border-y border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-          <div className="rounded-xl border border-accent/30 bg-accent/5 p-8 sm:p-10">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 sm:p-10">
             <div className="flex flex-col items-center text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
-                <BrainCircuit className="h-6 w-6 text-accent" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <BrainCircuit className="h-6 w-6 text-primary" />
               </div>
               <h2 className="mt-5 text-xl font-semibold sm:text-2xl">
                 The key insight
