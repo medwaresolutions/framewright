@@ -1,0 +1,138 @@
+import type { ConventionQuestion } from "@/types/conventions";
+
+export const generalConventions: ConventionQuestion[] = [
+  {
+    id: "naming-files",
+    category: "Naming Conventions",
+    question: "How should files and directories be named?",
+    description: "Consistent file naming makes projects navigable for both humans and AI.",
+    applicableTo: ["nextjs", "react-vite", "svelte", "vue-nuxt", "python-fastapi", "python-django", "express", "static", "other"],
+    isRequired: true,
+    options: [
+      {
+        id: "kebab-case",
+        label: "kebab-case (my-component.tsx)",
+        description: "Lowercase with hyphens. The most common convention for web projects. Easy to read and URL-safe.",
+        isRecommended: true,
+        generatedText: "**File Naming**: Use `kebab-case` for all files and directories. Example: `user-profile.tsx`, `api-client.ts`, `auth-provider/`.",
+      },
+      {
+        id: "camel-case",
+        label: "camelCase (myComponent.tsx)",
+        description: "No separators, capitalize each word. Common in Java/C# ecosystems.",
+        isRecommended: false,
+        generatedText: "**File Naming**: Use `camelCase` for all files and directories. Example: `userProfile.tsx`, `apiClient.ts`.",
+      },
+      {
+        id: "pascal-case",
+        label: "PascalCase (MyComponent.tsx)",
+        description: "Like camelCase but first letter capitalized. Common for React component files.",
+        isRecommended: false,
+        generatedText: "**File Naming**: Use `PascalCase` for component files and `camelCase` for utility files. Example: `UserProfile.tsx`, `apiClient.ts`.",
+      },
+    ],
+  },
+  {
+    id: "naming-variables",
+    category: "Naming Conventions",
+    question: "How should variables and functions be named?",
+    description: "Variable naming affects readability across the entire codebase.",
+    applicableTo: ["nextjs", "react-vite", "svelte", "vue-nuxt", "express", "static", "other"],
+    isRequired: false,
+    options: [
+      {
+        id: "camel-case-vars",
+        label: "camelCase for variables, PascalCase for components",
+        description: "Standard JavaScript/TypeScript convention. Most AI tools default to this.",
+        isRecommended: true,
+        generatedText: "**Variable Naming**: Use `camelCase` for variables, functions, and methods. Use `PascalCase` for React components and type/interface names. Use `SCREAMING_SNAKE_CASE` for constants.",
+      },
+      {
+        id: "snake-case-vars",
+        label: "snake_case for variables",
+        description: "Common in Python-influenced codebases. Less typical for JavaScript/TypeScript.",
+        isRecommended: false,
+        generatedText: "**Variable Naming**: Use `snake_case` for variables and functions. Use `PascalCase` for class names and React components. Use `SCREAMING_SNAKE_CASE` for constants.",
+      },
+    ],
+  },
+  {
+    id: "code-comments",
+    category: "Code Quality",
+    question: "What's your approach to code comments?",
+    description: "Comments help future AI sessions understand intent, but too many clutter the code.",
+    applicableTo: ["nextjs", "react-vite", "svelte", "vue-nuxt", "python-fastapi", "python-django", "express", "static", "other"],
+    isRequired: false,
+    options: [
+      {
+        id: "minimal-comments",
+        label: "Minimal — only for 'why', never for 'what'",
+        description: "Code should be self-documenting. Comments explain business logic or non-obvious decisions, not what the code does.",
+        isRecommended: true,
+        generatedText: "**Comments**: Minimal comments. Code should be self-documenting through clear naming. Only add comments to explain *why* something is done a certain way, never *what* the code does. No commented-out code.",
+      },
+      {
+        id: "jsdoc-comments",
+        label: "JSDoc on all public functions",
+        description: "Every exported function gets a JSDoc comment with parameter descriptions. Provides IDE tooltips and documentation.",
+        isRecommended: false,
+        generatedText: "**Comments**: Add JSDoc comments to all exported functions with `@param` and `@returns` descriptions. Use inline comments sparingly for complex logic only.",
+      },
+    ],
+  },
+  {
+    id: "testing-approach",
+    category: "Testing",
+    question: "What's your testing strategy?",
+    description: "Defining your testing expectations upfront prevents AI from either skipping tests or over-testing.",
+    applicableTo: ["nextjs", "react-vite", "svelte", "vue-nuxt", "python-fastapi", "python-django", "express", "other"],
+    isRequired: false,
+    options: [
+      {
+        id: "no-tests-v1",
+        label: "No tests in v1 — ship fast, test later",
+        description: "Focus on building features first. Add tests when the product stabilizes. Pragmatic for solo builders.",
+        isRecommended: false,
+        generatedText: "**Testing**: No automated tests required in v1. Focus on manual testing and shipping. Tests will be added in a later phase when the core product stabilizes.",
+      },
+      {
+        id: "critical-path-tests",
+        label: "Test critical paths only",
+        description: "Write tests for authentication, data mutations, and payment flows. Skip tests for UI layout and static pages.",
+        isRecommended: true,
+        generatedText: "**Testing**: Test critical paths only — authentication flows, data mutations, and business logic. Use integration tests over unit tests where possible. Skip tests for purely presentational components.",
+      },
+      {
+        id: "comprehensive-tests",
+        label: "Comprehensive test coverage",
+        description: "Unit tests for utilities, integration tests for features, E2E tests for critical flows. Good for teams but slower for solo builders.",
+        isRecommended: false,
+        generatedText: "**Testing**: Comprehensive coverage expected. Unit tests for utility functions and hooks. Integration tests for API routes and data flows. E2E tests for critical user journeys.",
+      },
+    ],
+  },
+  {
+    id: "git-conventions",
+    category: "Version Control",
+    question: "How should commits be structured?",
+    description: "Consistent commit messages help you and your AI understand project history.",
+    applicableTo: ["nextjs", "react-vite", "svelte", "vue-nuxt", "python-fastapi", "python-django", "express", "static", "other"],
+    isRequired: false,
+    options: [
+      {
+        id: "conventional-commits",
+        label: "Conventional Commits (feat:, fix:, chore:)",
+        description: "Structured commit messages with type prefixes. Enables automated changelogs.",
+        isRecommended: true,
+        generatedText: "**Git Commits**: Use Conventional Commits format: `feat: add user login`, `fix: resolve date parsing`, `chore: update deps`. Keep commits focused on a single change.",
+      },
+      {
+        id: "simple-descriptive",
+        label: "Simple descriptive messages",
+        description: "Just write clear descriptions of what changed. No format rules.",
+        isRecommended: false,
+        generatedText: "**Git Commits**: Write clear, descriptive commit messages. Start with a verb: \"Add user login flow\", \"Fix date parsing bug\". No specific format required.",
+      },
+    ],
+  },
+];
