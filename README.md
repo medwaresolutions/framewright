@@ -28,11 +28,15 @@ Framewright solves this by generating a structured set of markdown files (`PROJE
 - 📥 **Import existing projects** — Paste your folder tree or schema to bootstrap the wizard
 - 💾 **Auto-save** — Everything persists in localStorage
 
-## Quick Start
+## Use It Now
+
+**👉 [framewright.site](https://framewright.site)** — no install, no sign-up. Just open it and start building your project framework.
+
+## Run It Locally
 
 ```bash
 # Clone the repo
-git clone https://github.com/mattmartinaus/framewright.git
+git clone https://github.com/medwaresolutions/framewright.git
 cd framewright
 
 # Install dependencies
@@ -42,7 +46,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and start building your project framework.
+Open [http://localhost:3000](http://localhost:3000).
 
 ## How It Works
 
