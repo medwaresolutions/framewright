@@ -29,16 +29,49 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 function formatTaskNumber(n: number): string {
   return `task-${String(n).padStart(3, "0")}`;
+}
+
+function generateSkeletonDod(state: { identity: { techStack: { framework: string; database: string; auth: string; deployment: string; styling: string; componentLibrary: string } } }): string {
+  const { framework, database, auth, deployment, styling } = state.identity.techStack;
+  const items: string[] = [
+    "Project repository created and cloned locally",
+    framework ? `${framework} project initialised with default config` : "Project initialised with chosen framework",
+    styling ? `${styling} configured and working` : "Styling framework configured",
+    "Basic folder structure matches architecture layers from PROJECT.md",
+    database ? `${database} connection established and verified` : null,
+    auth ? `${auth} auth scaffolded (login/signup pages exist, even if non-functional)` : null,
+    deployment ? `App deployed to ${deployment} (even if just a hello-world page)` : "App deployed to hosting platform",
+    "All team members can clone, install, and run locally",
+    "README updated with local development instructions",
+  ].filter((item): item is string => item !== null);
+  return items.join("\n");
 }
 
 export function StepTasks() {
   const { state, dispatch } = useProject();
   const tasks = state.tasks;
   const features = state.features;
+
+  // Auto-generate task-000 (Skeleton Deployment) if it doesn't exist
+  useEffect(() => {
+    const hasTask000 = tasks.some((t) => t.taskNumber === 0);
+    if (!hasTask000 && features.length > 0) {
+      const skeletonTask: Task = {
+        id: crypto.randomUUID(),
+        taskNumber: 0,
+        name: "Skeleton Deployment",
+        featureIds: features.map((f) => f.id),
+        definitionOfDone: generateSkeletonDod(state),
+        fileBoundaries: "package.json, README.md, .env.example, src/app/layout.tsx, src/app/page.tsx",
+        sortOrder: -1,
+      };
+      dispatch({ type: "ADD_TASK", payload: skeletonTask });
+    }
+  }, [features.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sensors = useSensors(
     useSensor(PointerSensor),

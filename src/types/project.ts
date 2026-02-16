@@ -25,6 +25,9 @@ export interface ProjectIdentity {
   slug: string;
   purpose: string;
   techStack: TechStackSelection;
+  projectMode: "new" | "existing";
+  existingFolderTree: string;
+  existingSchema: string;
 }
 
 export interface TechStackSelection {
@@ -146,6 +149,9 @@ export function createDefaultProjectState(): ProjectState {
         componentLibrary: "",
         additional: [],
       },
+      projectMode: "new",
+      existingFolderTree: "",
+      existingSchema: "",
     },
     architecture: {
       appType: "",

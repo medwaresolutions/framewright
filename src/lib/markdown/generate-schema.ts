@@ -32,6 +32,14 @@ export function generateSchemaMd(state: ProjectState): string {
     sections.push("```", "");
   }
 
+  // Include existing project schema if provided
+  if (identity.existingSchema?.trim()) {
+    sections.push("## Existing Schema (Imported)", "");
+    sections.push("```sql");
+    sections.push(identity.existingSchema.trim());
+    sections.push("```", "");
+  }
+
   if (database.tables.length > 0) {
     sections.push("## Tables", "");
 

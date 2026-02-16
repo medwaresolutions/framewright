@@ -27,6 +27,9 @@ import {
   Pencil,
   Eye,
   Zap,
+  Rocket,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -37,9 +40,46 @@ export function StepReview() {
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
+  const [showGettingStarted, setShowGettingStarted] = useState(false);
 
   const files = useMemo(() => generateAll(state), [state]);
   const fileTree = useMemo(() => buildFileTree(files), [files]);
+
+  // Validation warnings
+  const warnings = useMemo(() => {
+    const w: string[] = [];
+    // Features with no name
+    const unnamedFeatures = state.features.filter((f) => !f.name.trim());
+    if (unnamedFeatures.length > 0) {
+      w.push(`${unnamedFeatures.length} feature${unnamedFeatures.length > 1 ? "s" : ""} with no name`);
+    }
+    // Features with no tasks linked
+    const featureIds = new Set(state.tasks.flatMap((t) => t.featureIds));
+    const unlinkedFeatures = state.features.filter((f) => !featureIds.has(f.id));
+    if (unlinkedFeatures.length > 0) {
+      w.push(`${unlinkedFeatures.length} feature${unlinkedFeatures.length > 1 ? "s" : ""} with no tasks linked: ${unlinkedFeatures.map((f) => f.name || "Unnamed").join(", ")}`);
+    }
+    // Tasks with no Definition of Done
+    const noDodTasks = state.tasks.filter((t) => !t.definitionOfDone.trim());
+    if (noDodTasks.length > 0) {
+      w.push(`${noDodTasks.length} task${noDodTasks.length > 1 ? "s" : ""} with no Definition of Done`);
+    }
+    // Tasks not linked to any feature
+    const orphanedTasks = state.tasks.filter((t) => t.featureIds.length === 0);
+    if (orphanedTasks.length > 0) {
+      w.push(`${orphanedTasks.length} task${orphanedTasks.length > 1 ? "s" : ""} not linked to any feature`);
+    }
+    // Empty convention decisions
+    const totalQuestions = state.conventions.decisions.length;
+    const answeredQuestions = state.conventions.decisions.filter((d) => d.selectedOptionId !== null).length;
+    const unanswered = totalQuestions - answeredQuestions;
+    if (unanswered > 0) {
+      w.push(`${unanswered} convention question${unanswered > 1 ? "s" : ""} not answered`);
+    } else if (totalQuestions === 0) {
+      w.push("No convention decisions made — consider going back to the Conventions step");
+    }
+    return w;
+  }, [state]);
 
   const selectedFile = selectedFilePath
     ? files.find((f) => f.path === selectedFilePath) ?? null
@@ -52,6 +92,7 @@ export function StepReview() {
     try {
       await createAndDownloadZip(files, state.identity.slug || "project");
       toast.success("ZIP downloaded successfully");
+      setShowGettingStarted(true);
     } catch {
       toast.error("Failed to create ZIP file");
     }
@@ -131,6 +172,21 @@ export function StepReview() {
         </div>
       )}
 
+      {/* Validation warnings */}
+      {warnings.length > 0 && (
+        <div className="rounded-md border border-yellow-500/50 bg-yellow-500/10 p-4 space-y-2">
+          <div className="flex items-center gap-2 text-yellow-700 dark:text-yellow-400 font-medium text-sm">
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <span>Heads up — {warnings.length} thing{warnings.length > 1 ? "s" : ""} to review:</span>
+          </div>
+          <ul className="space-y-1 text-sm text-yellow-700 dark:text-yellow-400 ml-6 list-disc">
+            {warnings.map((w, i) => (
+              <li key={i}>{w}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Action buttons */}
       <div className="flex flex-wrap gap-2">
         <Button onClick={handleDownloadZip} className="gap-2">
@@ -146,6 +202,48 @@ export function StepReview() {
           Copy Context Starters
         </Button>
       </div>
+
+      {/* Getting Started panel — shown after download */}
+      {showGettingStarted && (
+        <Card className="border-green-500/50 bg-green-500/5">
+          <CardContent className="pt-5 pb-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Rocket className="h-5 w-5 text-green-600" />
+              <h3 className="text-lg font-semibold">What&apos;s Next</h3>
+            </div>
+            <ol className="space-y-3 text-sm">
+              <li className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600 text-white text-xs font-bold">1</span>
+                <div>
+                  <p className="font-medium">Create your repo & drop in the framework files</p>
+                  <p className="text-muted-foreground">Unzip the download and copy all files into your project root. Commit them as your first commit.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600 text-white text-xs font-bold">2</span>
+                <div>
+                  <p className="font-medium">Copy the Skeleton Deployment prompt → paste into your AI</p>
+                  <p className="text-muted-foreground">Open <code className="text-xs bg-muted px-1 py-0.5 rounded">CONTEXT-WINDOW-STARTERS.md</code> and copy the task-000 starter. Paste it into your AI coding assistant to scaffold the project.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600 text-white text-xs font-bold">3</span>
+                <div>
+                  <p className="font-medium">Verify the checklist</p>
+                  <p className="text-muted-foreground">Work through the Definition of Done for task-000. Make sure the skeleton app builds, deploys, and every team member can run it locally.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600 text-white text-xs font-bold">4</span>
+                <div>
+                  <p className="font-medium">Start task-001 with the Context Window Starter</p>
+                  <p className="text-muted-foreground">Once the skeleton is deployed, move on to your first real task. Each task file has a ready-to-paste prompt for your AI.</p>
+                </div>
+              </li>
+            </ol>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Main layout: file tree + preview */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-4">

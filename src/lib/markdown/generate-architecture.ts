@@ -55,6 +55,17 @@ export function generateArchitectureMd(state: ProjectState): string {
     ...(layerSections.length > 0
       ? layerSections.flatMap((s) => [s, ""])
       : ["_No layers defined._", ""]),
+    // Include existing folder tree if provided
+    ...(identity.existingFolderTree?.trim()
+      ? [
+          "## Existing Folder Structure (Imported)",
+          "",
+          "```",
+          identity.existingFolderTree.trim(),
+          "```",
+          "",
+        ]
+      : []),
     "---",
     "",
     "*See [PROJECT.md](../PROJECT.md) for project overview.*",

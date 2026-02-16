@@ -139,6 +139,78 @@ export default function Home() {
         </div>
       </section>
 
+      {/* What you get */}
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <h2 className="text-center text-2xl font-semibold sm:text-3xl">
+          What you get
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
+          A complete set of structured files that drop into your project root.
+          Your AI reads them and knows exactly what it&apos;s building.
+        </p>
+        <div className="mx-auto mt-10 max-w-lg">
+          <div className="rounded-lg border border-border bg-card overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-4 py-2.5">
+              <div className="flex gap-1.5">
+                <span className="h-3 w-3 rounded-full bg-red-400/60" />
+                <span className="h-3 w-3 rounded-full bg-yellow-400/60" />
+                <span className="h-3 w-3 rounded-full bg-green-400/60" />
+              </div>
+              <span className="ml-2 text-xs text-muted-foreground font-mono">
+                my-project/
+              </span>
+            </div>
+            <pre className="px-5 py-4 text-sm font-mono leading-relaxed text-foreground/90 overflow-x-auto">
+{`my-project/
+├── PROJECT.md
+├── docs/
+│   ├── CONVENTIONS.md
+│   ├── ARCHITECTURE.md
+│   ├── SCHEMA.md
+│   └── STYLING.md
+├── features/
+│   ├── FEATURES-INDEX.md
+│   ├── auth.md
+│   └── dashboard.md
+├── tasks/
+│   ├── TASKS-MASTER.md
+│   ├── task-000-skeleton.md
+│   └── task-001-auth-flow.md
+└── CONTEXT-WINDOW-STARTERS.md`}
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* Output preview */}
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <h2 className="text-center text-2xl font-semibold sm:text-3xl">
+          What you get
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
+          A complete project framework — ready to drop into your repo and hand
+          to any AI.
+        </p>
+        <div className="mx-auto mt-8 max-w-lg rounded-lg border border-border bg-zinc-950 p-6 font-mono text-sm leading-relaxed text-zinc-300">
+          <p className="text-zinc-100 font-semibold mb-3">my-project/</p>
+          <p>├── <span className="text-blue-400">PROJECT.md</span></p>
+          <p>├── docs/</p>
+          <p>│   ├── <span className="text-blue-400">CONVENTIONS.md</span></p>
+          <p>│   ├── <span className="text-blue-400">ARCHITECTURE.md</span></p>
+          <p>│   ├── <span className="text-blue-400">SCHEMA.md</span></p>
+          <p>│   └── <span className="text-blue-400">STYLING.md</span></p>
+          <p>├── features/</p>
+          <p>│   ├── <span className="text-green-400">FEATURES-INDEX.md</span></p>
+          <p>│   ├── <span className="text-green-400">auth.md</span></p>
+          <p>│   └── <span className="text-green-400">dashboard.md</span></p>
+          <p>├── tasks/</p>
+          <p>│   ├── <span className="text-amber-400">TASKS-MASTER.md</span></p>
+          <p>│   ├── <span className="text-amber-400">task-000-skeleton.md</span></p>
+          <p>│   └── <span className="text-amber-400">task-001-auth-flow.md</span></p>
+          <p>└── <span className="text-purple-400">CONTEXT-WINDOW-STARTERS.md</span></p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
         <div className="flex flex-col items-center text-center">

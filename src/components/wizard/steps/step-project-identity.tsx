@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -73,6 +74,28 @@ export function StepProjectIdentity() {
         <p className="mt-1 text-muted-foreground">
           Name your project and choose your tech stack
         </p>
+      </div>
+
+      {/* Project Mode Toggle */}
+      <div className="flex items-center gap-3 rounded-lg border p-4">
+        <Switch
+          id="project-mode"
+          checked={identity.projectMode === "existing"}
+          onCheckedChange={(checked) =>
+            dispatch({
+              type: "SET_IDENTITY",
+              payload: { projectMode: checked ? "existing" : "new" },
+            })
+          }
+        />
+        <Label htmlFor="project-mode" className="cursor-pointer">
+          {identity.projectMode === "existing" ? "Existing Project" : "New Project"}
+        </Label>
+        <span className="text-sm text-muted-foreground">
+          {identity.projectMode === "existing"
+            ? "Import an existing project structure"
+            : "Start from scratch"}
+        </span>
       </div>
 
       {/* Project Name & Slug */}
@@ -273,6 +296,59 @@ export function StepProjectIdentity() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Existing Project Import */}
+      {identity.projectMode === "existing" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Import Existing Project</CardTitle>
+            <CardDescription>
+              Paste your folder structure and/or database schema to pre-fill what we can infer.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="folder-tree">Folder Tree</Label>
+              <Textarea
+                id="folder-tree"
+                placeholder={`Paste your folder structure, e.g.:\nsrc/\n  app/\n    layout.tsx\n    page.tsx\n  components/\n    ui/\n  lib/\n    utils.ts`}
+                value={identity.existingFolderTree}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_IDENTITY",
+                    payload: { existingFolderTree: e.target.value },
+                  })
+                }
+                rows={10}
+                className="font-mono text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                Tip: Run <code className="bg-muted px-1 rounded">find src -type f | head -100</code> or <code className="bg-muted px-1 rounded">tree src</code> in your project and paste the output.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="existing-schema">Existing Database Schema (SQL)</Label>
+              <Textarea
+                id="existing-schema"
+                placeholder={`Paste your CREATE TABLE statements or schema dump...`}
+                value={identity.existingSchema}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_IDENTITY",
+                    payload: { existingSchema: e.target.value },
+                  })
+                }
+                rows={10}
+                className="font-mono text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                This will be included in your SCHEMA.md output so your AI has full database context.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
