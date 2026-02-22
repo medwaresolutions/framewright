@@ -55,6 +55,10 @@ export function generateFeatureMd(
     .filter((r) => r.trim())
     .map((r) => `- ${r}`);
 
+  const criteriaLines = (feature.acceptanceCriteria ?? [])
+    .filter((c) => c.trim())
+    .map((c) => `- ${c}`);
+
   const tableLines = feature.relatedTables.map((t) => `- ${t}`);
 
   const taskLines = relatedTasks.map(
@@ -69,7 +73,17 @@ export function generateFeatureMd(
     "",
     "---",
     "",
+    "## Acceptance Criteria",
+    "",
+    "> What does success look like from the user's perspective?",
+    "",
+    ...(criteriaLines.length > 0
+      ? criteriaLines
+      : ["_No acceptance criteria defined._"]),
+    "",
     "## Business Rules",
+    "",
+    "> Technical constraints and system requirements.",
     "",
     ...(rulesLines.length > 0 ? rulesLines : ["_No business rules defined._"]),
     "",

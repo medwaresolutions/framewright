@@ -2,6 +2,7 @@
 
 import { ProjectProvider } from "@/contexts/project-context";
 import { WizardShell } from "@/components/wizard/wizard-shell";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 
 export default function CreatePage() {
@@ -9,6 +10,7 @@ export default function CreatePage() {
     <ErrorBoundary>
       <ProjectProvider>
         <WizardShell />
+        <ChatWidget />
       </ProjectProvider>
     </ErrorBoundary>
   );

@@ -18,6 +18,20 @@ export function loadProject(): ProjectState | null {
       return null;
     }
     const parsed = JSON.parse(serialized);
+    // Migrate: add new fields introduced after initial release
+    if (parsed.features) {
+      parsed.features = parsed.features.map((f: Record<string, unknown>) => ({
+        acceptanceCriteria: [],
+        ...f,
+      }));
+    }
+    if (parsed.tasks) {
+      parsed.tasks = parsed.tasks.map((t: Record<string, unknown>) => ({
+        status: "not-started",
+        outOfScope: "",
+        ...t,
+      }));
+    }
     return parsed;
   } catch (error) {
     console.error("Failed to load project from localStorage:", error);

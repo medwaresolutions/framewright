@@ -85,7 +85,7 @@ export interface ConventionDecision {
 }
 
 export interface ProjectDatabase {
-  approach: "plain-english" | "paste-sql" | "skip";
+  approach: "plain-english" | "paste-sql" | "import-csv" | "skip";
   plainEnglishDescription: string;
   pastedSchema: string;
   tables: DatabaseTable[];
@@ -104,9 +104,12 @@ export interface Feature {
   slug: string;
   description: string;
   businessRules: string[];
+  acceptanceCriteria: string[];
   relatedTables: string[];
   sortOrder: number;
 }
+
+export type TaskStatus = "not-started" | "in-progress" | "done" | "blocked";
 
 export interface Task {
   id: string;
@@ -115,6 +118,8 @@ export interface Task {
   featureIds: string[];
   definitionOfDone: string;
   fileBoundaries: string;
+  outOfScope: string;
+  status: TaskStatus;
   sortOrder: number;
 }
 

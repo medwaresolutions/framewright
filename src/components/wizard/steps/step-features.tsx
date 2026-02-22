@@ -69,6 +69,22 @@ function SortableFeatureCard({
     onUpdate({ name, slug });
   };
 
+  // Acceptance criteria handlers
+  const addAcceptanceCriterion = () => {
+    onUpdate({ acceptanceCriteria: [...(feature.acceptanceCriteria ?? []), ""] });
+  };
+
+  const updateAcceptanceCriterion = (index: number, value: string) => {
+    const updated = [...(feature.acceptanceCriteria ?? [])];
+    updated[index] = value;
+    onUpdate({ acceptanceCriteria: updated });
+  };
+
+  const removeAcceptanceCriterion = (index: number) => {
+    const updated = (feature.acceptanceCriteria ?? []).filter((_, i) => i !== index);
+    onUpdate({ acceptanceCriteria: updated });
+  };
+
   // Business rules handlers
   const addBusinessRule = () => {
     onUpdate({ businessRules: [...feature.businessRules, ""] });
@@ -153,6 +169,56 @@ function SortableFeatureCard({
                 placeholder="What does this feature do? What problem does it solve?"
                 rows={2}
               />
+            </div>
+
+            {/* Acceptance Criteria */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Acceptance Criteria</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    What does success look like from the user's perspective?
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={addAcceptanceCriterion}
+                  className="h-8"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add Criterion
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {(feature.acceptanceCriteria ?? []).map((criterion, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={criterion}
+                      onChange={(e) =>
+                        updateAcceptanceCriterion(index, e.target.value)
+                      }
+                      placeholder="e.g., User can log in and see their dashboard within 2 seconds"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeAcceptanceCriterion(index)}
+                      className="shrink-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {(feature.acceptanceCriteria ?? []).length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No acceptance criteria yet. Click "Add Criterion" to define what done looks like for users.
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Business Rules */}
@@ -269,6 +335,7 @@ export function StepFeatures() {
       slug: "",
       description: "",
       businessRules: [""],
+      acceptanceCriteria: [],
       relatedTables: [],
       sortOrder: state.features.length,
     };

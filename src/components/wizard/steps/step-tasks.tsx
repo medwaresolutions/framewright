@@ -2,7 +2,7 @@
 
 import { useProject } from "@/contexts/project-context";
 import { MAX_TASKS } from "@/lib/constants";
-import type { Task, Feature } from "@/types/project";
+import type { Task, Feature, TaskStatus } from "@/types/project";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Plus, Trash2, GripVertical, AlertTriangle } from "lucide-react";
 import {
@@ -99,6 +106,8 @@ export function StepTasks() {
       featureIds: [],
       definitionOfDone: "",
       fileBoundaries: "",
+      outOfScope: "",
+      status: "not-started",
       sortOrder: tasks.length,
     };
     dispatch({ type: "ADD_TASK", payload: newTask });
@@ -351,6 +360,43 @@ function SortableTaskCard({
                   }
                   rows={2}
                 />
+              </div>
+
+              {/* Out of Scope */}
+              <div className="space-y-1">
+                <Label htmlFor={`oos-${task.id}`} className="text-xs text-muted-foreground">
+                  Out of Scope
+                </Label>
+                <Textarea
+                  id={`oos-${task.id}`}
+                  placeholder="What must NOT be touched? e.g., 'Do not modify the auth layer, do not change database schema, do not refactor adjacent components'"
+                  value={task.outOfScope ?? ""}
+                  onChange={(e) =>
+                    onUpdate(task.id, { outOfScope: e.target.value })
+                  }
+                  rows={2}
+                />
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Status</Label>
+                <Select
+                  value={task.status ?? "not-started"}
+                  onValueChange={(value) =>
+                    onUpdate(task.id, { status: value as TaskStatus })
+                  }
+                >
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not-started">○ Not Started</SelectItem>
+                    <SelectItem value="in-progress">→ In Progress</SelectItem>
+                    <SelectItem value="done">✓ Done</SelectItem>
+                    <SelectItem value="blocked">✗ Blocked</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

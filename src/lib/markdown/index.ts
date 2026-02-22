@@ -1,8 +1,12 @@
 import type { ProjectState, Task } from "@/types/project";
 import type { GeneratedFile } from "@/types/export";
 import { generateProjectMd } from "./generate-project";
+import { generatePrimeMd } from "./generate-prime";
 import { generateArchitectureMd } from "./generate-architecture";
-import { generateConventionsMd } from "./generate-conventions";
+import {
+  generateConventionsMd,
+  generateConventionsQuickRefMd,
+} from "./generate-conventions";
 import { generateStylingMd } from "./generate-styling";
 import { generateSchemaMd } from "./generate-schema";
 import {
@@ -14,6 +18,11 @@ import {
   generateTaskMd,
 } from "./generate-tasks";
 import { generateContextStartersMd } from "./generate-context-starters";
+import {
+  generateClaudeMd,
+  generateCursorRules,
+  generateCopilotInstructions,
+} from "./generate-ai-configs";
 
 function wordCount(text: string): number {
   return text
@@ -36,6 +45,17 @@ function taskSlug(task: Task): string {
 export function generateAll(state: ProjectState): GeneratedFile[] {
   const files: GeneratedFile[] = [];
 
+  // PRIME.md (root) — tiny AI navigator, always read first
+  const primeContent =
+    state.markdownOverrides["PRIME.md"] ?? generatePrimeMd(state);
+  files.push({
+    path: "PRIME.md",
+    filename: "PRIME.md",
+    content: primeContent,
+    wordCount: wordCount(primeContent),
+    category: "root",
+  });
+
   // PROJECT.md (root)
   const projectContent =
     state.markdownOverrides["PROJECT.md"] ?? generateProjectMd(state);
@@ -47,15 +67,15 @@ export function generateAll(state: ProjectState): GeneratedFile[] {
     category: "root",
   });
 
-  // docs/ARCHITECTURE.md
-  const archContent =
-    state.markdownOverrides["docs/ARCHITECTURE.md"] ??
-    generateArchitectureMd(state);
+  // docs/CONVENTIONS-QUICKREF.md — short critical rules for every session
+  const quickRefContent =
+    state.markdownOverrides["docs/CONVENTIONS-QUICKREF.md"] ??
+    generateConventionsQuickRefMd(state);
   files.push({
-    path: "docs/ARCHITECTURE.md",
-    filename: "ARCHITECTURE.md",
-    content: archContent,
-    wordCount: wordCount(archContent),
+    path: "docs/CONVENTIONS-QUICKREF.md",
+    filename: "CONVENTIONS-QUICKREF.md",
+    content: quickRefContent,
+    wordCount: wordCount(quickRefContent),
     category: "docs",
   });
 
@@ -68,6 +88,18 @@ export function generateAll(state: ProjectState): GeneratedFile[] {
     filename: "CONVENTIONS.md",
     content: convContent,
     wordCount: wordCount(convContent),
+    category: "docs",
+  });
+
+  // docs/ARCHITECTURE.md
+  const archContent =
+    state.markdownOverrides["docs/ARCHITECTURE.md"] ??
+    generateArchitectureMd(state);
+  files.push({
+    path: "docs/ARCHITECTURE.md",
+    filename: "ARCHITECTURE.md",
+    content: archContent,
+    wordCount: wordCount(archContent),
     category: "docs",
   });
 
@@ -161,6 +193,38 @@ export function generateAll(state: ProjectState): GeneratedFile[] {
     content: contextContent,
     wordCount: wordCount(contextContent),
     category: "root",
+  });
+
+  // AI tool config files
+  const claudeMdContent =
+    state.markdownOverrides["CLAUDE.md"] ?? generateClaudeMd(state);
+  files.push({
+    path: "CLAUDE.md",
+    filename: "CLAUDE.md",
+    content: claudeMdContent,
+    wordCount: wordCount(claudeMdContent),
+    category: "ai-configs",
+  });
+
+  const cursorRulesContent =
+    state.markdownOverrides[".cursorrules"] ?? generateCursorRules(state);
+  files.push({
+    path: ".cursorrules",
+    filename: ".cursorrules",
+    content: cursorRulesContent,
+    wordCount: wordCount(cursorRulesContent),
+    category: "ai-configs",
+  });
+
+  const copilotContent =
+    state.markdownOverrides[".github/copilot-instructions.md"] ??
+    generateCopilotInstructions(state);
+  files.push({
+    path: ".github/copilot-instructions.md",
+    filename: "copilot-instructions.md",
+    content: copilotContent,
+    wordCount: wordCount(copilotContent),
+    category: "ai-configs",
   });
 
   return files;

@@ -47,6 +47,13 @@ export function generateTasksMasterMd(state: ProjectState): string {
   return sections.join("\n");
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  done: "✓ Done",
+  "in-progress": "→ In Progress",
+  blocked: "✗ Blocked",
+  "not-started": "○ Not Started",
+};
+
 export function generateTaskMd(task: Task, state: ProjectState): string {
   const linkedFeatures = state.features.filter((f) =>
     task.featureIds.includes(f.id)
@@ -56,8 +63,12 @@ export function generateTaskMd(task: Task, state: ProjectState): string {
     (f) => `- [${f.name || "Unnamed"}](../features/${f.slug || "unnamed"}.md)`
   );
 
+  const statusLabel = STATUS_LABEL[task.status ?? "not-started"] ?? "○ Not Started";
+
   const sections: string[] = [
     `# ${formatTaskNumber(task.taskNumber)}: ${task.name || "Unnamed Task"}`,
+    "",
+    `**Status:** ${statusLabel}`,
     "",
     "---",
     "",
@@ -73,7 +84,17 @@ export function generateTaskMd(task: Task, state: ProjectState): string {
     "",
     "## File Boundaries",
     "",
-    task.fileBoundaries.trim() || "_Not specified._",
+    task.fileBoundaries.trim() ||
+      "_Not specified. See related feature files for context._",
+    "",
+    "## Out of Scope",
+    "",
+    task.outOfScope?.trim() ||
+      "_Not specified. Do not modify files outside the File Boundaries above._",
+    "",
+    "## Session Notes",
+    "",
+    "_Add notes here when this task is completed or paused._",
     "",
     "---",
     "",

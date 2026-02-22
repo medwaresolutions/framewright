@@ -3,7 +3,7 @@ export interface GeneratedFile {
   filename: string;
   content: string;
   wordCount: number;
-  category: "root" | "docs" | "features" | "tasks";
+  category: "root" | "docs" | "features" | "tasks" | "ai-configs";
 }
 
 export interface FileTreeNode {
