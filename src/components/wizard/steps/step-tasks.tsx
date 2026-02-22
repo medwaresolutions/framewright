@@ -74,6 +74,8 @@ export function StepTasks() {
         featureIds: features.map((f) => f.id),
         definitionOfDone: generateSkeletonDod(state),
         fileBoundaries: "package.json, README.md, .env.example, src/app/layout.tsx, src/app/page.tsx",
+        outOfScope: "Do not build any feature functionality — skeleton only.",
+        status: "not-started",
         sortOrder: -1,
       };
       dispatch({ type: "ADD_TASK", payload: skeletonTask });
