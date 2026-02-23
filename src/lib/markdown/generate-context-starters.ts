@@ -1,4 +1,4 @@
-import type { ProjectState, Task } from "@/types/project";
+import type { ProjectState, Task, Feature } from "@/types/project";
 
 function formatTaskNumber(n: number): string {
   return `task-${String(n).padStart(3, "0")}`;
@@ -11,6 +11,80 @@ function taskSlug(task: Task): string {
   return `${formatTaskNumber(task.taskNumber)}${slug ? `-${slug}` : ""}`;
 }
 
+/**
+ * Determine which docs/ files are relevant to a task based on its content
+ * and linked features. Always includes CONVENTIONS-QUICKREF.md.
+ */
+function selectiveDocs(
+  task: Task,
+  linkedFeatures: Feature[],
+  state: ProjectState
+): string[] {
+  const docs: string[] = ["docs/CONVENTIONS-QUICKREF.md"];
+
+  const combinedText = [
+    task.name,
+    task.definitionOfDone,
+    task.fileBoundaries,
+    task.outOfScope,
+    ...linkedFeatures.map(
+      (f) => `${f.name} ${f.description} ${f.businessRules.join(" ")}`
+    ),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  // Schema: features have related tables, or task mentions data/database concepts
+  const needsSchema =
+    state.database.approach !== "skip" &&
+    (linkedFeatures.some((f) => f.relatedTables && f.relatedTables.length > 0) ||
+      /database|schema|table|supabase|postgres|sql|migration|query|model|row|column|record|seed/i.test(
+        combinedText
+      ));
+
+  // Styling: task mentions UI or visual concerns
+  const needsStyling =
+    /style|styling|\bui\b|component|design|colou?r|font|css|tailwind|theme|brand|visual|layout|page|screen|view|button|form|modal|card|responsive|dark mode/i.test(
+      combinedText
+    );
+
+  // Architecture: task mentions structural patterns or routing
+  const needsArchitecture =
+    /architecture|structure|pattern|\broute\b|api\b|endpoint|middleware|auth(?:entication)?|service|\bhook\b|context|provider|state management|folder structure/i.test(
+      combinedText
+    );
+
+  if (needsSchema) docs.push("docs/SCHEMA.md");
+  if (needsStyling) docs.push("docs/STYLING.md");
+  if (needsArchitecture) docs.push("docs/ARCHITECTURE.md");
+
+  return docs;
+}
+
+function buildStarterPrompt(
+  task: Task,
+  linkedFeatures: Feature[],
+  state: ProjectState
+): string {
+  const docs = selectiveDocs(task, linkedFeatures, state);
+  const docsReading = docs.join(", then read ");
+
+  const featureFiles = linkedFeatures
+    .map((f) => `features/${f.slug || "unnamed"}.md`)
+    .join(", then read ");
+  const readFeatures = featureFiles ? `, then read ${featureFiles}` : "";
+
+  const taskFile = `tasks/${taskSlug(task)}.md`;
+
+  return [
+    `Read PRIME.md, then read ${docsReading}${readFeatures}, then read ${taskFile}.`,
+    `Complete the task described in the task file.`,
+    `Stay within the File Boundaries listed in the task file and do not modify anything in the Out of Scope section.`,
+    `On completion, verify your work against the Definition of Done.`,
+    `Before closing this session, update ${taskFile}: set the Status field to reflect your progress (in-progress / done / blocked), and add a brief note under ## Session Notes — what you completed, any decisions made, and what remains if anything.`,
+  ].join(" ");
+}
+
 export function generateContextStartersMd(state: ProjectState): string {
   const { tasks, features } = state;
 
@@ -18,18 +92,14 @@ export function generateContextStartersMd(state: ProjectState): string {
     const linkedFeatures = features.filter((f) =>
       task.featureIds.includes(f.id)
     );
-    const featureFiles = linkedFeatures
-      .map((f) => `features/${f.slug || "unnamed"}.md`)
-      .join(", then read ");
 
-    const readFeatures = featureFiles ? `, then read ${featureFiles}` : "";
+    const prompt = buildStarterPrompt(task, linkedFeatures, state);
 
     return [
       `### ${formatTaskNumber(task.taskNumber)}: ${task.name || "Unnamed"}`,
       "",
       "```",
-      `Read PROJECT.md, then read docs/CONVENTIONS.md${readFeatures}, then read tasks/${taskSlug(task)}.md.`,
-      `Complete the task described in the task file. On completion, review your work against the Definition of Done.`,
+      prompt,
       "```",
       "",
     ].join("\n");
@@ -39,7 +109,7 @@ export function generateContextStartersMd(state: ProjectState): string {
     "# Context Window Starters",
     "",
     "> Copy-paste these prompts into your AI tool at the start of each coding session.",
-    "> Each prompt loads the exact context needed for one task.",
+    "> Each prompt loads the exact context needed for one task — no more, no less.",
     "",
     "---",
     "",
@@ -66,11 +136,5 @@ export function generateSingleContextStarter(
   const linkedFeatures = state.features.filter((f) =>
     task.featureIds.includes(f.id)
   );
-  const featureFiles = linkedFeatures
-    .map((f) => `features/${f.slug || "unnamed"}.md`)
-    .join(", then read ");
-
-  const readFeatures = featureFiles ? `, then read ${featureFiles}` : "";
-
-  return `Read PROJECT.md, then read docs/CONVENTIONS.md${readFeatures}, then read tasks/${taskSlug(task)}.md. Complete the task described in the task file. On completion, review your work against the Definition of Done.`;
+  return buildStarterPrompt(task, linkedFeatures, state);
 }

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   BookOpen,
+  Github,
   ShieldCheck,
   Wrench,
   Zap,
@@ -38,6 +39,16 @@ export default function Home() {
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link href="/guide">Read the Guide</Link>
+            </Button>
+            <Button asChild variant="ghost" size="lg" className="gap-2">
+              <a
+                href="https://github.com/medwaresolutions/framewright"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="h-4 w-4" />
+                GitHub
+              </a>
             </Button>
           </div>
         </div>
@@ -271,8 +282,12 @@ export default function Home() {
             </div>
             <pre className="px-5 py-4 text-sm font-mono leading-relaxed text-foreground/90 overflow-x-auto">
 {`my-project/
+├── PRIME.md                    ← AI navigator, read first
 ├── PROJECT.md
+├── CONTEXT-WINDOW-STARTERS.md ← session prompts
+├── CLAUDE.md / .cursorrules   ← auto-loaded by AI tools
 ├── docs/
+│   ├── CONVENTIONS-QUICKREF.md
 │   ├── CONVENTIONS.md
 │   ├── ARCHITECTURE.md
 │   ├── SCHEMA.md
@@ -281,11 +296,9 @@ export default function Home() {
 │   ├── FEATURES-INDEX.md
 │   ├── auth.md
 │   └── dashboard.md
-├── tasks/
-│   ├── TASKS-MASTER.md
-│   ├── task-000-skeleton.md
-│   └── task-001-auth-flow.md
-└── CONTEXT-WINDOW-STARTERS.md`}
+└── tasks/
+    ├── TASKS-MASTER.md
+    └── task-001-auth-flow.md`}
             </pre>
           </div>
         </div>
@@ -301,11 +314,23 @@ export default function Home() {
             It takes about 10 minutes to set up a framework. It saves hours of
             wasted AI sessions.
           </p>
-          <Button asChild size="lg" className="mt-8 gap-2">
-            <Link href="/create">
-              Start Your Project <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row items-center justify-center">
+            <Button asChild size="lg" className="gap-2">
+              <Link href="/create">
+                Start Your Project <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="gap-2">
+              <a
+                href="https://github.com/medwaresolutions/framewright"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="h-4 w-4" />
+                View on GitHub
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
