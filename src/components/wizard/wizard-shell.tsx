@@ -15,6 +15,7 @@ import { StepFeatures } from "./steps/step-features";
 import { StepTasks } from "./steps/step-tasks";
 import { StepReview } from "./steps/step-review";
 import { StepDeployment } from "./steps/step-deployment";
+import { MessageCircle } from "lucide-react";
 
 const STEP_COMPONENTS: Record<number, React.ComponentType> = {
   1: StepProjectIdentity,
@@ -59,6 +60,13 @@ export function WizardShell() {
       className={`mx-auto px-4 py-8 sm:px-6 ${isWideStep ? "max-w-5xl" : "max-w-3xl"}`}
     >
       <WizardProgress />
+      <div className="mt-3 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm text-primary">
+        <MessageCircle className="h-4 w-4 shrink-0" />
+        <span>
+          <span className="font-semibold">Bring your AI.</span>{" "}
+          Use the chat widget below to describe your project and get help filling in each step.
+        </span>
+      </div>
       {showExportBanner && <ExportBanner />}
       <div className="mt-8">
         {CurrentStepComponent ? <CurrentStepComponent /> : null}

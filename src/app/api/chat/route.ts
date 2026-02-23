@@ -2,9 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
 
+interface AnthropicToolUse {
+  type: "tool_use";
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+interface AnthropicTextBlock {
+  type: "text";
+  text: string;
+}
+
+type AnthropicContent = AnthropicToolUse | AnthropicTextBlock;
+
 export async function POST(req: NextRequest) {
   try {
-    const { messages, systemPrompt, apiKey } = await req.json();
+    const { messages, systemPrompt, apiKey, tools } = await req.json();
 
     if (!apiKey) {
       return NextResponse.json(
@@ -20,6 +34,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const body: Record<string, unknown> = {
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages,
+    };
+
+    if (tools && Array.isArray(tools) && tools.length > 0) {
+      body.tools = tools;
+    }
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -28,12 +53,7 @@ export async function POST(req: NextRequest) {
         "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true",
       },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages,
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
@@ -45,10 +65,18 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await response.json();
-    const text =
-      data?.content?.[0]?.type === "text" ? data.content[0].text : "";
+    const content: AnthropicContent[] = data?.content ?? [];
 
-    return NextResponse.json({ text });
+    const text = content
+      .filter((c): c is AnthropicTextBlock => c.type === "text")
+      .map((c) => c.text)
+      .join("");
+
+    const toolUses = content.filter(
+      (c): c is AnthropicToolUse => c.type === "tool_use"
+    );
+
+    return NextResponse.json({ text, toolUses, content });
   } catch (err) {
     console.error("Chat API error:", err);
     return NextResponse.json(
