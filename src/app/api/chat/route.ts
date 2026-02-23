@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 interface AnthropicToolUse {
   type: "tool_use";
   id: string;
@@ -51,7 +49,6 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
       },
       body: JSON.stringify(body),
     });

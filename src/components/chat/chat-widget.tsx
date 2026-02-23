@@ -369,13 +369,17 @@ export function ChatWidget() {
       });
 
       if (!res1.ok) {
-        const errData = await res1.json().catch(() => ({}));
+        const errText = await res1.text().catch(() => "");
+        let errMsg = `HTTP ${res1.status}`;
+        try {
+          const errData = JSON.parse(errText) as { error?: string };
+          if (errData.error) errMsg = errData.error;
+        } catch {
+          if (errText) errMsg += ` — ${errText.slice(0, 120)}`;
+        }
         setMessages((prev) => [
           ...prev,
-          {
-            role: "assistant",
-            content: `Error: ${(errData as { error?: string }).error ?? "Something went wrong"}`,
-          },
+          { role: "assistant", content: `Error: ${errMsg}` },
         ]);
         return;
       }
@@ -442,10 +446,11 @@ export function ChatWidget() {
         }),
       });
 
-      const d2 = (await res2.json()) as { text: string };
-      const finalText =
-        d2.text ||
-        filledActions.map((a) => `✓ ${a}`).join("\n");
+      let finalText = filledActions.map((a) => `✓ ${a}`).join("\n");
+      if (res2.ok) {
+        const d2 = (await res2.json()) as { text: string };
+        if (d2.text) finalText = d2.text;
+      }
 
       setMessages((prev) => [
         ...prev,
