@@ -60,6 +60,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Memory hierarchy */}
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <div className="rounded-xl border border-primary/20 bg-primary/5 px-8 py-10 text-center">
+          <h2 className="text-xl font-semibold sm:text-2xl">
+            The right memory, in the right place.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            Your AI already has a global memory — your root{" "}
+            <code className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-mono text-primary">
+              CLAUDE.md
+            </code>
+            ,{" "}
+            <code className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-mono text-primary">
+              .cursor/rules
+            </code>
+            , and similar files. That memory is valuable. Don&apos;t clog it
+            with project-specific context that bleeds into every other session.
+          </p>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+            Framewright creates project-scoped memory instead — structured files
+            that live inside your repo, travel with your code, and stay
+            completely invisible to every other project your AI works on. Global
+            memory stays lean. Project context stays contained. The hierarchy
+            works the way it should.
+          </p>
+        </div>
+      </section>
+
       {/* Solution */}
       <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
         <h2 className="text-center text-2xl font-semibold sm:text-3xl">
