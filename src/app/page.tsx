@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
-  FileText,
-  Target,
-  Layers,
-  CheckCircle2,
+  BookOpen,
+  ShieldCheck,
+  Wrench,
+  Zap,
 } from "lucide-react";
 
 export default function Home() {
@@ -14,13 +14,21 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto w-full max-w-5xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="flex flex-col items-center text-center">
+          <span className="mb-5 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+            Surrogate memory for AI-assisted development
+          </span>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            Stop prompting.{" "}
-            <span className="text-muted-foreground">Start planning.</span>
+            Give your AI a better memory.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            The framework that makes AI build what you actually want. Set up
-            your project so every AI session starts with the right context.
+            AI coding assistants are powerful but forgetful. Framewright gives
+            them a structured memory — your conventions, architecture, features,
+            and task boundaries — that loads into any AI&apos;s context window
+            in seconds. No re-explaining. No scope creep. No drift.
+          </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Especially powerful for complex projects and developers running
+            multiple codebases.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="gap-2">
@@ -42,10 +50,12 @@ export default function Home() {
             Sound familiar?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
-            You prompt AI to build something. It builds something wrong. You
-            iterate 15 times. You end up with inconsistent code, mixed patterns,
-            and wasted hours. The problem isn&apos;t the AI — it&apos;s that you
-            skipped the planning step.
+            A new session. A blank context. The AI doesn&apos;t know your stack,
+            your conventions, or what you built last week. So you re-explain
+            everything — again. Then it &ldquo;helpfully&rdquo; refactors code
+            you didn&apos;t ask it to touch. Then it makes an architectural
+            decision that conflicts with one you made three weeks ago. The AI
+            isn&apos;t the problem. The missing memory is.
           </p>
         </div>
       </section>
@@ -58,28 +68,28 @@ export default function Home() {
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              icon: FileText,
-              title: "Structure first",
+              icon: BookOpen,
+              title: "Structured memory, not blank sessions",
               description:
-                "Define your project before you open AI. Name it, set the tech stack, choose your architecture.",
+                "Every session starts with your full project context loaded — stack, conventions, architecture, and the exact task at hand. No re-explaining from scratch.",
             },
             {
-              icon: Target,
-              title: "Features as outcomes",
+              icon: ShieldCheck,
+              title: "Task boundaries that hold",
               description:
-                "Describe what you want built, not step-by-step instructions. Let AI figure out the how.",
+                "Each task defines exactly which files the AI can touch and what it must leave alone. Stop it from \"helpfully\" breaking things you didn't ask it to change.",
             },
             {
-              icon: Layers,
-              title: "Right-sized context",
+              icon: Wrench,
+              title: "Works with every AI tool",
               description:
-                "Give every AI session just enough context to do great work — no more, no less.",
+                "Framewright auto-generates config files for Claude Code, Cursor, and GitHub Copilot. Whichever tool you open, your context is already there.",
             },
             {
-              icon: CheckCircle2,
-              title: "Isolated tasks",
+              icon: Zap,
+              title: "Prompts included",
               description:
-                "Break features into focused tasks with clear definitions of done. One task per AI session.",
+                "Context window starters are pre-written for every task. Copy, paste, build. You don't need to know how to prompt — the framework does it for you.",
             },
           ].map((item) => (
             <div key={item.title} className="flex flex-col gap-3">
