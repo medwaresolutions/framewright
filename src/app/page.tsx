@@ -139,25 +139,29 @@ export default function Home() {
           <h2 className="text-center text-2xl font-semibold sm:text-3xl">
             How it works
           </h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+          <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
+            Setup takes about 10 minutes. Then drop the files into your repo and
+            let your AI do the reading.
+          </p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {[
               {
                 step: "1",
                 title: "Walk through the wizard",
                 description:
-                  "Answer guided questions about your project — identity, architecture, conventions, features, and tasks.",
+                  "Define your project — identity, stack, architecture, conventions, features, and tasks. Bring your AI to help.",
               },
               {
                 step: "2",
                 title: "Export your framework",
                 description:
-                  "Download a ZIP of well-structured markdown files — PROJECT.md, CONVENTIONS.md, feature files, task files.",
+                  "Download a ZIP of structured markdown files and drop them into your project root.",
               },
               {
                 step: "3",
-                title: "Use with any AI",
+                title: "Start a session",
                 description:
-                  "Copy the context window starter prompt. Paste it into Claude, ChatGPT, Cursor — any AI tool. Start building.",
+                  "Copy a context window starter prompt, paste it into any AI tool, and watch it orient itself instantly.",
               },
             ].map((item) => (
               <div
@@ -173,6 +177,73 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+
+          {/* Reading cascade */}
+          <div className="mt-16">
+            <h3 className="text-center text-xl font-semibold sm:text-2xl">
+              How your AI reads it — every session
+            </h3>
+            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
+              The framework is designed for selective, efficient reading. The AI
+              never loads everything — only what the current task needs.
+            </p>
+            <div className="mx-auto mt-10 max-w-2xl">
+              {[
+                {
+                  file: "PRIME.md",
+                  title: "Start at the navigator",
+                  description:
+                    "A tiny file — always small by design — that orients the AI instantly. Project overview, stack, current task status. Read first, every session, no exceptions.",
+                },
+                {
+                  file: "CONTEXT-WINDOW-STARTERS.md",
+                  title: "Follow the context starter",
+                  description:
+                    "A pre-written prompt tells the AI exactly which files to read next — only the docs, features, and tasks relevant to the current work. Nothing irrelevant is loaded.",
+                },
+                {
+                  file: "docs/",
+                  title: "Read selectively through the docs",
+                  description:
+                    "Building a database feature? Read SCHEMA.md. Touching the UI? STYLING.md. Writing new code? CONVENTIONS.md. The cascade routes the AI to exactly what it needs.",
+                },
+                {
+                  file: "features/ → tasks/",
+                  title: "Land on the task",
+                  description:
+                    "Each task file is scoped to complete within a single context window — a clear definition of done, explicit file boundaries, and an out-of-scope section telling the AI what not to touch.",
+                },
+                {
+                  file: "↺ write back",
+                  title: "Update memory before exiting",
+                  description:
+                    "When the task is complete, the AI updates the task file — status, session notes, what changed. The next session starts with accurate, current memory. And the cycle begins again.",
+                },
+              ].map((item, i, arr) => (
+                <div key={item.file} className="flex gap-5">
+                  <div className="flex flex-col items-center">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+                      <span className="text-xs font-bold text-primary">
+                        {i + 1}
+                      </span>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <div className="my-1 w-px flex-1 bg-border" />
+                    )}
+                  </div>
+                  <div className="pb-8">
+                    <code className="text-xs font-mono font-semibold text-primary">
+                      {item.file}
+                    </code>
+                    <h4 className="mt-0.5 font-semibold">{item.title}</h4>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
