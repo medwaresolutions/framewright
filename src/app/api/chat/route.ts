@@ -1,5 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
+// ---------------------------------------------------------------------------
+// Simple in-memory rate limiting — 30 requests per IP per hour
+// Note: resets across cold starts in serverless; good enough for basic protection
+// ---------------------------------------------------------------------------
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 30;
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+
 interface AnthropicToolUse {
   type: "tool_use";
   id: string;
@@ -16,14 +42,25 @@ type AnthropicContent = AnthropicToolUse | AnthropicTextBlock;
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, systemPrompt, apiKey, tools } = await req.json();
-
+    const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: "No API key provided" },
-        { status: 401 }
+        { error: "Server is not configured with an API key" },
+        { status: 503 }
       );
     }
+
+    // Rate limit by IP
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests — please try again in an hour" },
+        { status: 429 }
+      );
+    }
+
+    const { messages, systemPrompt, tools } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(

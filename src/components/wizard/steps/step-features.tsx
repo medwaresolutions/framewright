@@ -1,6 +1,7 @@
 "use client";
 
 import { useProject } from "@/contexts/project-context";
+import { useChat } from "@/contexts/chat-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -51,6 +52,7 @@ function SortableFeatureCard({
     transition,
     isDragging,
   } = useSortable({ id: feature.id });
+  const { setFocusedField } = useChat();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -143,6 +145,16 @@ function SortableFeatureCard({
                   value={feature.name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   placeholder="e.g., User Authentication"
+                  onFocus={() =>
+                    setFocusedField({
+                      fieldId: `feature.name.${feature.id}`,
+                      fieldLabel: "Feature Name",
+                      fieldDescription:
+                        "Short name identifying a distinct capability or user workflow",
+                      step: 6,
+                    })
+                  }
+                  onBlur={() => setFocusedField(null)}
                 />
               </div>
               <div className="space-y-2">
@@ -168,6 +180,16 @@ function SortableFeatureCard({
                 onChange={(e) => onUpdate({ description: e.target.value })}
                 placeholder="What does this feature do? What problem does it solve?"
                 rows={2}
+                onFocus={() =>
+                  setFocusedField({
+                    fieldId: `feature.description.${feature.id}`,
+                    fieldLabel: "Feature Description",
+                    fieldDescription:
+                      "What this feature does from the user's perspective — the problem it solves",
+                    step: 6,
+                  })
+                }
+                onBlur={() => setFocusedField(null)}
               />
             </div>
 

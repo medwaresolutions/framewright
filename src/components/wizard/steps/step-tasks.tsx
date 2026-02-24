@@ -1,6 +1,7 @@
 "use client";
 
 import { useProject } from "@/contexts/project-context";
+import { useChat } from "@/contexts/chat-context";
 import { MAX_TASKS } from "@/lib/constants";
 import type { Task, Feature, TaskStatus } from "@/types/project";
 import { Card, CardContent } from "@/components/ui/card";
@@ -242,6 +243,7 @@ function SortableTaskCard({
     transition,
     isDragging,
   } = useSortable({ id: task.id });
+  const { setFocusedField } = useChat();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -288,6 +290,16 @@ function SortableTaskCard({
                     onUpdate(task.id, { name: e.target.value })
                   }
                   className="flex-1"
+                  onFocus={() =>
+                    setFocusedField({
+                      fieldId: `task.name.${task.id}`,
+                      fieldLabel: "Task Name",
+                      fieldDescription:
+                        "Short imperative name for a bite-sized unit of AI-assisted coding work",
+                      step: 7,
+                    })
+                  }
+                  onBlur={() => setFocusedField(null)}
                 />
                 <Button
                   variant="ghost"
@@ -345,6 +357,16 @@ function SortableTaskCard({
                     onUpdate(task.id, { definitionOfDone: e.target.value })
                   }
                   rows={2}
+                  onFocus={() =>
+                    setFocusedField({
+                      fieldId: `task.dod.${task.id}`,
+                      fieldLabel: "Definition of Done",
+                      fieldDescription:
+                        "Clear, testable criteria that define when this task is fully complete",
+                      step: 7,
+                    })
+                  }
+                  onBlur={() => setFocusedField(null)}
                 />
               </div>
 

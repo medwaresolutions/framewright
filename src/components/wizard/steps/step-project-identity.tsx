@@ -1,6 +1,7 @@
 "use client";
 
 import { useProject } from "@/contexts/project-context";
+import { useChat } from "@/contexts/chat-context";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -26,6 +27,7 @@ import {
 export function StepProjectIdentity() {
   const { state, dispatch } = useProject();
   const { identity } = state;
+  const { setFocusedField } = useChat();
 
   // Generate slug from project name
   const handleNameChange = (value: string) => {
@@ -107,6 +109,15 @@ export function StepProjectIdentity() {
             placeholder="e.g. My Awesome App"
             value={identity.name}
             onChange={(e) => handleNameChange(e.target.value)}
+            onFocus={() =>
+              setFocusedField({
+                fieldId: "identity.name",
+                fieldLabel: "Project Name",
+                fieldDescription: "Short, memorable name for the project",
+                step: 1,
+              })
+            }
+            onBlur={() => setFocusedField(null)}
           />
           {identity.slug && (
             <p className="text-sm text-muted-foreground">
@@ -124,6 +135,16 @@ export function StepProjectIdentity() {
             onChange={(e) => handlePurposeChange(e.target.value)}
             rows={4}
             className="resize-none"
+            onFocus={() =>
+              setFocusedField({
+                fieldId: "identity.purpose",
+                fieldLabel: "Project Purpose",
+                fieldDescription:
+                  "One or two sentences describing what the project does and who it is for",
+                step: 1,
+              })
+            }
+            onBlur={() => setFocusedField(null)}
           />
         </div>
       </div>
